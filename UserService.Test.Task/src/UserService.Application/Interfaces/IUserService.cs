@@ -4,8 +4,8 @@ namespace UserService.Application.Interfaces
 {
     public interface IUserService
     {
-        Task CreateUserAsync(User user);
-        Task<List<User>> GetUsersAsync();
-        Task UpdateUserRoleAsync(int userId, string newRole);
+        Task<string> CreateUserAsync(User user);
+        Task<IEnumerable<User>> GetUsersAsync();
+        Task<string> UpdateUserRoleAsync(int userId, string newRole);
     }
 }

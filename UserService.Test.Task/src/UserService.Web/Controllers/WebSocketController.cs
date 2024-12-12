@@ -16,7 +16,7 @@ namespace UserService.Web.Controllers
         {
             _userService = userService;
         }
-        
+
         [HttpPost("add-user")]
         public async Task<IActionResult> AddUser([FromBody] User user)
         {
@@ -26,11 +26,10 @@ namespace UserService.Web.Controllers
 
             if (result.IsValid)
             {
-                await _userService.CreateUserAsync(user);
+                var createResult = await _userService.CreateUserAsync(user);
 
-                return Ok(new { message = "User updated successfully." });
+                return Ok(new { message = createResult });
             }
-
 
             var errors = new StringBuilder();
             foreach (var error in result.Errors)
@@ -44,9 +43,9 @@ namespace UserService.Web.Controllers
         [HttpPost("update-user")]
         public async Task<IActionResult> UpdateUser([FromBody] User rquest)
         {
-            
+
 
             return Ok(new { message = "User updated successfully." });
         }
-    }    
+    }
 }

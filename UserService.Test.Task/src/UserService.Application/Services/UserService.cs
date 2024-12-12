@@ -12,19 +12,27 @@ namespace UserService.Application.Services
             _userRepository = userRepository;
         }
 
-        public Task CreateUserAsync(User user)
+        public async Task<string> CreateUserAsync(User newUser)
         {
-            return _userRepository.CreateUserAsync(user);
+            var user = new User
+            {
+                Name = newUser.Name,
+                Email = newUser.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.PasswordHash),
+                Role = newUser.Role
+            };            
+
+            return await _userRepository.CreateUserAsync(user);
         }
 
-        public Task<List<User>> GetUsersAsync()
+        public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            return _userRepository.GetUsersAsync();
+            return await _userRepository.GetUsersAsync();
         }
 
-        public Task UpdateUserRoleAsync(int userId, string newRole)
+        public async Task<string> UpdateUserRoleAsync(int userId, string newRole)
         {
-            return _userRepository.UpdateUserRoleAsync(userId, newRole);
+            return await _userRepository.UpdateUserRoleAsync(userId, newRole);
         }
     }
 }
