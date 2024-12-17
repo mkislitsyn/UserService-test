@@ -9,7 +9,7 @@ namespace UserService.Application.Validators.Models
         public UpdateUserValidator()
         { 
             RuleFor(x => x.UserId).GreaterThan(0).WithMessage("User id could be greater than 0");
-            RuleFor(user => user.Role).IsInEnum().WithMessage($"Role must be a valid UserRole value ({UserRole.Admin} or {UserRole.User}).");
+            RuleFor(user => user.Role).Must(x => x.Equals(UserRole.Admin) || x.Equals(UserRole.User)).WithMessage($"Role must be a valid UserRole value ({UserRole.Admin} or {UserRole.User}).");
         }
     }
 }

@@ -74,7 +74,7 @@ namespace UserService.Web.Controllers
             }
         }
 
-        private async Task<string> ProcessUserAction(string message)
+        public async Task<string> ProcessUserAction(string message)
         {
             try
             {
@@ -144,49 +144,5 @@ namespace UserService.Web.Controllers
                 return $"Error processing request: {ex.Message}";
             }
         }
-
-        //private static Dictionary<string, WebSocket> _sockets = new Dictionary<string, WebSocket>();
-        //[HttpGet("connectV1")]
-        //public async Task Getv1()
-        //{
-        //    if (HttpContext.WebSockets.IsWebSocketRequest)
-        //    {
-        //        var socket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-        //        var socketId = Guid.NewGuid().ToString();
-        //        _sockets.Add(socketId, socket);
-
-        //        await Receive(socket, async (result, buffer) =>
-        //        {
-        //            if (result.MessageType == WebSocketMessageType.Text)
-        //            {
-        //                var userInfo = Encoding.UTF8.GetString(buffer, 0, result.Count);
-        //                // Handle received user info (for example, update a database)
-        //                Console.WriteLine($"Received: {userInfo}");
-        //                await socket.SendAsync(Encoding.UTF8.GetBytes("User info updated"), WebSocketMessageType.Text, true, CancellationToken.None);
-        //            }
-        //            else if (result.MessageType == WebSocketMessageType.Close)
-        //            {
-        //                _sockets.Remove(socketId);
-        //                await socket.CloseAsync(result.CloseStatus.Value, result.CloseStatusDescription, CancellationToken.None);
-        //            }
-        //        });
-        //    }
-        //    else
-        //    {
-        //        HttpContext.Response.StatusCode = 400;
-        //    }
-        //}
-
-        //private async Task Receive(WebSocket socket, Action<WebSocketReceiveResult, byte[]> handleMessage)
-        //{
-        //    var buffer = new byte[1024 * 4];
-        //    while (socket.State == WebSocketState.Open)
-        //    {
-        //        var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-        //        handleMessage(result, buffer);
-        //    }
-        //}
-
-
     }
 }

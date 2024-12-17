@@ -11,7 +11,7 @@ namespace UserService.Application.Validators.Models
             RuleFor(user => user.Name).NotEmpty().WithMessage("Name is required.");
             RuleFor(user => user.Email).NotEmpty().WithMessage("Emai is required.").Matches(ValidationRegexPatterns.EmailPattern).WithMessage("Invalid email address.");
             RuleFor(user => user.Password).NotEmpty().WithMessage("Password is required.");
-            RuleFor(user => user.Role).IsInEnum().WithMessage($"Role must be a valid UserRole value ({UserRole.Admin} or {UserRole.User}).");
+            RuleFor(user => user.Role).Must( x=>x.Equals(UserRole.Admin) || x.Equals(UserRole.User)).WithMessage($"Role must be a valid UserRole value ({UserRole.Admin} or {UserRole.User}).");
         }
     }
 }
