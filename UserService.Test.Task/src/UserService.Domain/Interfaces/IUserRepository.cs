@@ -6,6 +6,6 @@ namespace UserService.Domain.Interfaces
     {
         Task<string> CreateUserAsync(User user);
         Task<IEnumerable<User>> GetUsersAsync();
-        Task<string> UpdateUserRoleAsync(int userId, string newRole);
+        Task<string> UpdateUserRoleAsync(User user);
     }
 }

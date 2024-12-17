@@ -1,4 +1,5 @@
-﻿using UserService.Application.Interfaces;
+﻿using UserService.Application.Dto;
+using UserService.Application.Interfaces;
 using UserService.Domain.Entity;
 using UserService.Domain.Interfaces;
 
@@ -12,27 +13,37 @@ namespace UserService.Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<string> CreateUserAsync(User newUser)
+        public async Task<string> CreateUserAsync(UserDto userDto)
         {
             var user = new User
             {
-                Name = newUser.Name,
-                Email = newUser.Email,
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.PasswordHash),
-                Role = newUser.Role
-            };            
+                Name = userDto.Name,
+                Email = userDto.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
+                Role = userDto.Role
+            };
 
             return await _userRepository.CreateUserAsync(user);
         }
 
         public async Task<IEnumerable<User>> GetUsersAsync()
         {
-            return await _userRepository.GetUsersAsync();
+            var result = await _userRepository.GetUsersAsync();
+
+            return result;
         }
 
-        public async Task<string> UpdateUserRoleAsync(int userId, string newRole)
+        public async Task<string> UpdateUserRoleAsync(UserDto userDto)
         {
-            return await _userRepository.UpdateUserRoleAsync(userId, newRole);
+            var user = new User
+            {
+                Id = userDto.UserId,
+                Role = userDto.Role
+            };
+
+            var result = await _userRepository.UpdateUserRoleAsync(user);
+
+            return result;
         }
     }
 }

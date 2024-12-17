@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Logging;
 using UserService.DbContexts;
 using UserService.Domain.Entity;
-using UserService.Domain.Enums;
 using UserService.Domain.Interfaces;
 
 namespace UserService.Infrastructure.Repositories
@@ -29,7 +28,7 @@ namespace UserService.Infrastructure.Repositories
             {
                 _logger.LogError(ex, "Add User Error");
 
-                return $"Errors while addind new user {ex}";
+                return $"Errors while addind new user {ex.Message}";
             }
             return $"User {user.Name} was creted successfully";
         }
@@ -38,7 +37,7 @@ namespace UserService.Infrastructure.Repositories
         {
             try
             {
-                var users = await _context.Users.ToListAsync();
+                var users = await _context.Users.AsNoTracking().ToListAsync();
 
                 return users;
             }
@@ -50,39 +49,32 @@ namespace UserService.Infrastructure.Repositories
             }
         }
 
-        public async Task<string> UpdateUserRoleAsync(int userId, string newRole)
+        public async Task<string> UpdateUserRoleAsync(User user)
         {
             try
             {
-                var user = await _context.Users.Include(p => p.Name).FirstOrDefaultAsync(p => p.Id == userId);
+                var foundUser = await _context.Users.FirstOrDefaultAsync(p => p.Id == user.Id);
 
-                if (user == null)
+                if (foundUser == null)
                 {
                     return "user dosen't Exist";
                 }
 
-                if (Enum.TryParse(newRole, out UserRole parsedRole))
-                {
+                foundUser.Role = user.Role;
 
-                    user.Role = parsedRole;
-                    
-                    _context.Entry(user).State = EntityState.Modified;
+                _context.Entry(foundUser).State = EntityState.Modified;
 
-                    await _context.SaveChangesAsync();
-                }
-                else
-                {
-                    return $"Role {newRole} dosen't support";
-                }
+                await _context.SaveChangesAsync();
+
             }
             catch (DbUpdateConcurrencyException ex)
             {
                 _logger.LogError(ex, "Update user role error");
 
-                return $"Errors while updating user role for userId {userId}: {ex}";
+                return $"Errors while updating user role for userId {user.Id}: {ex.Message}";
             }
 
-            return $"For user {userId} new role {newRole} was updated successfully";
+            return $"For user {user.Id} new role {user.Role} was updated successfully";
         }
     }
 }

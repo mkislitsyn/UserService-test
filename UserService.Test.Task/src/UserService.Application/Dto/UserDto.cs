@@ -1,13 +1,13 @@
 ﻿using UserService.Domain.Enums;
 
-namespace UserService.Domain.Entity
+namespace UserService.Application.Dto
 {
-    public class User
+    public class UserDto
     {
-        public long Id { get; set; }
+        public long UserId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public string PasswordHash { get; set; }
+        public string Password { get; set; }
         public UserRole Role { get; set; }
     }
 }
