@@ -20,9 +20,6 @@ builder.Logging.AddConsole();
 
 var app = builder.Build();
 
-//app.UseDefaultFiles();
-//app.UseStaticFiles();
-
 using var scope = app.Services.CreateScope();
 await scope.AddInfrastructureScopesAsync();
 

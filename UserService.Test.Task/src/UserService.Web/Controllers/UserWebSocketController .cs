@@ -57,9 +57,6 @@ namespace UserService.Web.Controllers
                     var receivedMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
                     Console.WriteLine($"Received: {receivedMessage}");
 
-                    // Simulate updating user info in a database (just echoing the message for now)
-                    //var responseMessage = $"User info updated: {message}";
-
                     var responseMessage = await ProcessUserAction(receivedMessage);
 
                     var responseBytes = Encoding.UTF8.GetBytes(responseMessage);
