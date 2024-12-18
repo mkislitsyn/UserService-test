@@ -1,22 +1,29 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
+using TestWebSocketApp;
 using TestWebSocketApp.Enums;
 using TestWebSocketApp.Models;
 
-var serverUri = new Uri("wss://localhost:7059/ws/userwebsocket/connect");
+string apiUrl = Environment.GetEnvironmentVariable("API_URL") ?? "wss://localhost:7059/ws/userwebsocket/connect";
+
+string[] predefinedActions = Environment.GetEnvironmentVariable("PREDEFINED_ACTIONS")?.Split(',') ?? ["3", "4"];
+var actionQueue = new Queue<string>(predefinedActions);
+
+bool useAuto = predefinedActions.Count() > 2;
+var serverUri = new Uri(apiUrl);
 
 using var client = new ClientWebSocket();
 
 try
 {
     // Connect to the WebSocket server
-    Console.WriteLine("Connecting to the WebSocket server...");
+    Console.WriteLine($"Connecting to the WebSocket server url {serverUri}...");
     await client.ConnectAsync(serverUri, CancellationToken.None);
     Console.WriteLine("Connected to WebSocket server!");
-
+    
     var receiveTask = ReceiveMessagesAsync(client);
-    var sendTask = SendMessagesAsync(client);
+    var sendTask = useAuto ? AautoTest.SendMessagesAsync(client, actionQueue) : SendMessagesAsync(client);
 
     await Task.WhenAll(sendTask, receiveTask);
 
@@ -148,6 +155,12 @@ static string UpdateUser()
     var userAction = new UserAction { ActionType = ActionType.Update, User = new UserDto { UserId = userId, Role = role } };
     return JsonSerializer.Serialize(userAction);
 }
+
+
+
+
+
+
 
 static string GetAll()
 {

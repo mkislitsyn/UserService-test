@@ -1,0 +1,56 @@
+services:
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: user-db
+    ports:
+      - "1233:1233"
+    networks:
+      - websocket-network
+    environment:
+      SA_PASSWORD: "WebSocketAppPassword!"
+      ACCEPT_EULA: "Y"
+      MSSQL_TCP_PORT: 1233
+      MSSQL_TLS_ENABLED: "false"
+    volumes:
+      - sql_data:/var/opt/mssql
+
+  api:    
+    build:
+      context: .
+      dockerfile: UserService.Test.Task/Dockerfile
+    container_name: userService-websocket  
+    ports:
+      - "3000:80"
+    networks:
+      - websocket-network
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=user-db,1233;Database=UserDb;User Id=sa;Password=WebSocketAppPassword!;Encrypt=False;"
+    depends_on:
+      - db
+    healthcheck:
+      test: curl -f http://userService-websocket/health
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  console:    
+    build:
+      context: .
+      dockerfile: TestWebSocketApp/Dockerfile
+    stdin_open: true  # Equivalent to -i (Keep STDIN open)
+    tty: true         # Equivalent to -t (Allocate a pseudo-TTY)
+    container_name: testWebSocketApp-console
+    networks:
+      - websocket-network
+    depends_on:
+      api:
+       condition: service_healthy
+    environment: 
+        API_URL: "ws://userService-websocket/ws/userwebsocket/connect"
+        PREDEFINED_ACTIONS: "1,1,1,1,2,3,4"
+
+volumes:
+  sql_data:
+  
+networks:
+  websocket-network:

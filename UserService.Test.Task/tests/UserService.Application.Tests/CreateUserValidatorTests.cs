@@ -55,7 +55,7 @@ namespace UserService.Application.Tests
         public void Should_HaveError_When_PasswordIsEmpty()
         {
             // Arrange
-            var user = new UserDto { Name = "John Doe", Email = "test@example.com", Password = "", Role = UserRole.User };
+            var user = new UserDto { Name = "Password Empty", Email = "test@example.com", Password = "", Role = UserRole.User };
 
             // Act & Assert
             var result = _validator.TestValidate(user);
@@ -67,7 +67,7 @@ namespace UserService.Application.Tests
         public void Should_HaveError_When_RoleIsInvalid()
         {
             // Arrange
-            var user = new UserDto { Name = "John Doe", Email = "test@example.com", Password = "password!123", Role = UserRole.Unknown};
+            var user = new UserDto { Name = "Role Invalid", Email = "test@example.com", Password = "password!123", Role = UserRole.Unknown};
 
             // Act & Assert
             var result = _validator.TestValidate(user);
@@ -79,7 +79,7 @@ namespace UserService.Application.Tests
         public void Should_NotHaveError_When_ValidUser()
         {
             // Arrange
-            var user = new UserDto { Name = "John Doe", Email = "test@example.com", Password = "password!123", Role = UserRole.User };
+            var user = new UserDto { Name = "Valid User", Email = "test@example.com", Password = "password!123", Role = UserRole.User };
 
             // Act & Assert
             var result = _validator.TestValidate(user);
